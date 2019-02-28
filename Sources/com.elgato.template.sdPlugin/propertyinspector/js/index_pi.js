@@ -6,19 +6,19 @@
  * This example contains a working Property Inspector, which already communicates
  * with the corresponding plugin throug settings and/or direct messages.
  * If you want to use other control-types, we recommend copy/paste these from the
- * PISamples demo-library, which already contains quite some example DOM elements 
+ * PISamples demo-library, which already contains quite some example DOM elements
  */
 
 
 /**
  * First we declare a global variable, which change all elements behaviour
  * globally. It installs the 'onchange' or 'oninput' event on the HTML controls and fiels.
- * 
+ *
  * Change this, if you want interactive elements act on any modification (oninput),
  * or while their value changes 'onchange'.
  */
 
-var onchangeevt = 'onchange'; // 'oninput'; 
+var onchangeevt = 'onchange'; // 'oninput';
 
 /**
  * cache the static SDPI-WRAPPER, which contains all your HTML elements.
@@ -50,10 +50,10 @@ $SD.on('connected', (jsn) => {
      * We use this to inject some dynamic CSS values (saved in 'common_pi.js'), to allow
      * drawing proper highlight-colors or progressbars.
      */
-    
+
     console.log("connected");
     addDynamicStyles($SD.applicationInfo.colors, 'connectSocket');
-    
+
     /**
      * Current settings are passed in the JSON node
      * {actionInfo: {
@@ -64,7 +64,7 @@ $SD.on('connected', (jsn) => {
      * ...
      * To conveniently read those settings, we have a little utility to read
      * arbitrary values from a JSON object, eg:
-     * 
+     *
      * const foundObject = Utils.getProp(JSON-OBJECT, 'path.to.target', defaultValueIfNotFound)
      */
 
@@ -83,7 +83,7 @@ $SD.on('sendToPropertyInspector', jsn => {
     const pl = jsn.payload;
     /**
      *  This is an example, how you could show an error to the user
-     */ 
+     */
      if (pl.hasOwnProperty('error')) {
         sdpiWrapper.innerHTML = `<div class="sdpi-item">
             <details class="message caution">
@@ -92,13 +92,13 @@ $SD.on('sendToPropertyInspector', jsn => {
             </details>
         </div>`;
     } else {
-        
+
         /**
-         * 
+         *
          * Do something with the data sent from the plugin
          * e.g. update some elements in the Property Inspector's UI.
-         * 
-         */       
+         *
+         */
     }
 });
 
@@ -117,12 +117,12 @@ const updateUI = (pl) => {
 /**
  * Something in the PI changed:
  * either you clicked a button, dragged a slider or entered some text
- * 
+ *
  * The 'piDataChanged' event is sent, if data-changes are detected.
  * The changed data are collected in a JSON structure
- * 
+ *
  * It looks like this:
- * 
+ *
  *  {
  *      checked: false
  *      group: false
@@ -130,20 +130,20 @@ const updateUI = (pl) => {
  *      key: "mynameinput"
  *      selection: []
  *      value: "Elgato"
- *  } 
- * 
+ *  }
+ *
  * If you set an 'id' to an input-element, this will get the 'key' of this object.
  * The input's value will get the value.
- * There are other fields (e.g. 
+ * There are other fields (e.g.
  *      - 'checked' if you clicked a checkbox
  *      - 'index', if you clicked an element within a group of other elements
  *      - 'selection', if the element allows multiple-selections
- * ) 
- * 
- * Please note: 
+ * )
+ *
+ * Please note:
  * the template creates this object for the most common HTML input-controls.
  * This is a convenient way to start interacting with your plugin quickly.
- * 
+ *
  */
 
 $SD.on('piDataChanged', (returnValue) => {
@@ -151,28 +151,46 @@ $SD.on('piDataChanged', (returnValue) => {
     console.log('%c%s', 'color: white; background: blue}; font-size: 15px;', 'piDataChanged');
     console.log(returnValue);
 
-    // /* SAVE THE VALUE TO SETTINGS */
-    saveSettings(returnValue);
+    if (returnValue.key === 'clickme') {
 
-    /* SEND THE VALUES TO PLUGIN */
-    sendValueToPlugin(returnValue, 'sdpi_collection');
+        postMessage = (w) => {
+            w.postMessage(
+                Object.assign({}, $SD.applicationInfo.application, {action: $SD.actionInfo.action})
+                ,'*');
+        }
+
+        if (!window.xtWindow || window.xtWindow.closed) {
+            window.xtWindow  = window.open('../externalWindow.html', 'External Window');
+            setTimeout(() => postMessage(window.xtWindow), 200);
+        } else {
+           postMessage(window.xtWindow);
+        }
+
+    } else {
+
+        /* SAVE THE VALUE TO SETTINGS */
+        saveSettings(returnValue);
+
+        /* SEND THE VALUES TO PLUGIN */
+        sendValueToPlugin(returnValue, 'sdpi_collection');
+    }
 });
 
 /**
  * Below are a bunch of helpers to make your DOM interactive
  * The will cover changes of the most common elements in your DOM
  * and send their value to the plugin on a change.
- * To accomplish this, the 'handleSdpiItemChange' method tries to find the 
+ * To accomplish this, the 'handleSdpiItemChange' method tries to find the
  * nearest element 'id' and the corresponding value of the element(along with
- * some other information you might need) . It then puts everything in a 
+ * some other information you might need) . It then puts everything in a
  * 'sdpi_collection', where the 'id' will get the 'key' and the 'value' will get the 'value'.
- * 
+ *
  * In the plugin you just need to listen for 'sdpi_collection' in the sent JSON.payload
  * and save the values you need in your settings (or StreamDeck-settings for persistence).
- * 
+ *
  * In this template those key/value pairs are saved automatically persistently to StreamDeck.
  * Open the console in the remote debugger to inspect what's getting saved.
- * 
+ *
  */
 
  function saveSettings(sdpi_collection) {
@@ -191,14 +209,14 @@ $SD.on('piDataChanged', (returnValue) => {
 
  /**
   * 'sendValueToPlugin' is a wrapper to send some values to the plugin
-  * 
+  *
   * It is called with a value and the name of a property:
-  * 
+  *
   * sendValueToPlugin(<any value>), 'key-property')
-  * 
+  *
   * where 'key-property' is the property you listen for in your plugin's
   * 'sendToPlugin' events payload.
-  * 
+  *
   */
 
  function sendValueToPlugin(value, prop) {
@@ -213,7 +231,7 @@ $SD.on('piDataChanged', (returnValue) => {
                 targetContext: $SD.actionInfo['context']
             }
         };
-        
+
         $SD.connection.send(JSON.stringify(json));
     }
 }
@@ -267,7 +285,7 @@ function prepareDOMElements(baseElement) {
                     };
                 }
             );
-            /** Just in case the found HTML element already has an input or change - event attached, 
+            /** Just in case the found HTML element already has an input or change - event attached,
              * we clone it, and call it in the callback, right before the freshly attached event
             */
             const cloneEvt = el[evt];
@@ -320,7 +338,7 @@ function prepareDOMElements(baseElement) {
 function handleSdpiItemChange(e, idx) {
 
     /** Following items are containers, so we won't handle clicks on them */
-    
+
     if (['OL', 'UL', 'TABLE'].includes(e.tagName)) {
         return;
     }
@@ -333,19 +351,19 @@ function handleSdpiItemChange(e, idx) {
     if (e.tagName === 'SPAN') {
         const inp = e.parentNode.querySelector('input');
         var tmpValue;
-        
+
         // if there's no attribute set for the span, try to see, if there's a value in the textContent
         // and use it as value
         if (!e.hasAttribute('value')) {
                tmpValue = Number(e.textContent);
             if (typeof tmpValue === 'number' && tmpValue !== null) {
                 e.setAttribute('value', 0+tmpValue); // this is ugly, but setting a value of 0 on a span doesn't do anything
-                e.value = tmpValue; 
+                e.value = tmpValue;
             }
         } else {
             tmpValue = Number(e.getAttribute('value'));
         }
-        
+
         if (inp && tmpValue !== undefined) {
             inp.value = tmpValue;
         } else return;
@@ -368,7 +386,7 @@ function handleSdpiItemChange(e, idx) {
             e.classList.toggle('selected');
         }
     }
-  
+
     if (sdpiItemChildren.length && ['radio','checkbox'].includes(sdpiItemChildren[0].type)) {
         e.setAttribute('_value', e.checked); //'_value' has priority over .value
     }
@@ -462,9 +480,9 @@ function localizeUI() {
 }
 
 /**
- * 
- * Some more (de-) initialization helpers 
- * 
+ *
+ * Some more (de-) initialization helpers
+ *
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -481,3 +499,7 @@ window.addEventListener('beforeunload', function(e) {
     sendValueToPlugin('propertyInspectorWillDisappear', 'property_inspector');
     // Don't set a returnValue to the event, otherwise Chromium with throw an error.  // e.returnValue = '';
 });
+
+function gotCallbackFromWindow(parameter) {
+    console.log(parameter);
+}
