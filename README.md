@@ -18,7 +18,7 @@ If you think about creating a Stream Deck plugin, it's a good idea to start with
 
 There are also a bunch of utility helpers included, which makes it easy to process messages sent and received via Websockets.
 
-Together with the [`PISamples` library](https://github.com/elgatosf/streamdeck-pisamples/) it helps you create your full-fledges Stream Deck plugin fast.
+Together with the [`PISamples` library](https://github.com/elgatosf/streamdeck-pisamples/) it helps you create your full-fledged Stream Deck plugin fast.
 
 ## Features:
 
@@ -42,16 +42,15 @@ A short guide to help you getting started quickly.
 
 ### Do a search/replace on strings in the template's files:
 
-Use a your utility of choice (or your terminal) to do a full string replace using:
+Use your utility of choice (or your terminal) to do a full string replace using:
 
 Replace all occurences of:
 
 `com.elgato.template` with `your.identifier.plugin`
 
-and
+and:
 
-`Stream Deck Template` with`Your Plugin Name`
-
+`Stream Deck Template` with `Your Plugin Name`
 
 Fire up your preferred code-editor and open `app.js`.
 
