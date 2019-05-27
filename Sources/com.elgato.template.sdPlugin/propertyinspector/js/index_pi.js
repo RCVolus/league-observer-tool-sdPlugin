@@ -107,7 +107,7 @@ const updateUI = (pl) => {
         if (e && e != '') {
             const foundElement = document.querySelector(`#${e}`);
             console.log(`searching for: #${e}`, 'found:', foundElement);
-            if (foundElement) {
+            if (foundElement && foundElement.type !== 'file') {
                 foundElement.value = pl[e];
                 const maxl = foundElement.getAttribute('maxlength') || 50;
                 const labels = document.querySelectorAll(`[for='${foundElement.id}']`);
@@ -157,7 +157,7 @@ $SD.on('piDataChanged', (returnValue) => {
 
     console.log('%c%s', 'color: white; background: blue}; font-size: 15px;', 'piDataChanged');
     console.log(returnValue);
-
+    
     if (returnValue.key === 'clickme') {
 
         postMessage = (w) => {
