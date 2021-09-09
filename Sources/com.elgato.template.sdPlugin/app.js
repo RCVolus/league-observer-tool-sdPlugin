@@ -64,7 +64,7 @@ const action = {
          * to setup your plugin or save the settings for later use. 
          * If you want to request settings at a later time, you can do so using the
          * 'getSettings' event, which will tell Stream Deck to send your data 
-         * (in the 'didReceiveSettings above)
+         * (in the 'didReceiceSettings above)
          * 
          * $SD.api.getSettings(jsn.context);
         */
