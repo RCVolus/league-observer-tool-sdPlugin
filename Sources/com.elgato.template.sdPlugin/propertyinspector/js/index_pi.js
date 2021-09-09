@@ -404,7 +404,12 @@ function handleSdpiItemChange(e, idx) {
         }
     }
 
-    if (e.selectedIndex) {
+    if (e.selectedIndex !== undefined) {
+        if (e.tagName === 'SELECT') {
+            sdpiItemChildren.forEach((ec, i) => {
+                selectedElements.push({ [ec.id]: ec.value });
+            });
+        }
         idx = e.selectedIndex;
     } else {
         sdpiItemChildren.forEach((ec, i) => {
