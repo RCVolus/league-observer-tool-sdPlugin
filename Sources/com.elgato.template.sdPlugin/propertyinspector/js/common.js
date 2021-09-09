@@ -24,7 +24,7 @@ var $localizedStrings = $localizedStrings || {},
     debugLog = function () {},
     MIMAGECACHE = MIMAGECACHE || {};
 
-const setDebugOutput = (debug) => (debug === true) ? console.log.bind(window.console) : function () {};
+const setDebugOutput = debug => (debug === true ? console.log.bind(window.console) : function() {});
 debugLog = setDebugOutput(debug);
 
 // Create a wrapper to allow passing JSON to the socket
@@ -48,7 +48,7 @@ String.prototype.lox = function () {
 
 String.prototype.sprintf = function (inArr) {
     let i = 0;
-    const args = (inArr && Array.isArray(inArr)) ? inArr : arguments;
+    const args = inArr && Array.isArray(inArr) ? inArr : arguments;
     return this.replace(/%s/g, function () {
         return args[i++];
     });
@@ -69,7 +69,7 @@ const loadLocalization = (lang, pathPrefix, cb) => {
         debugLog($localizedStrings);
         if (cb && typeof cb === 'function') cb();
     });
-}
+};
 
 var Utils = {
     sleep: function (milliseconds) {
@@ -136,20 +136,50 @@ Utils.minmax = function (v, min = 0, max = 100) {
     return Math.min(max, Math.max(min, v));
 };
 
+Utils.unique = function(arr) {
+    return Array.from(new Set(arr));
+};
+
+Utils.transformValue = function(prcnt, min, max) {
+    return Math.round(((max - min) * prcnt) / 100 + min);
+};
+
 Utils.rangeToPercent = function (value, min, max) {
-    return ((value - min) / (max - min));
+    return (value - min) / (max - min);
 };
 
 Utils.percentToRange = function (percent, min, max) {
-    return ((max - min) * percent + min);
+    return (max - min) * percent + min;
 };
 
-Utils.setDebugOutput = (debug) => {
-    return (debug === true) ? console.log.bind(window.console) : function () {};
+Utils.setDebugOutput = debug => {
+    return debug === true ? console.log.bind(window.console) : function() {};
 };
 
 Utils.randomComponentName = function (len = 6) {
     return `${Utils.randomLowerString(len)}-${Utils.randomLowerString(len)}`;
+};
+
+Utils.shuffleArray = arr => {
+    let i, j, tmp;
+    for(i = arr.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        tmp = arr[ i ];
+        arr[ i ] = arr[ j ];
+        arr[ j ] = tmp;
+    }
+    return a;
+};
+
+Utils.randomElementFromArray = arr => {
+    return arr[ Math.floor(Math.random() * arr.length) ];
+};
+
+Utils.arrayToObject = (arr, key) => {
+    arr.reduce((obj, item) => {
+        obj[item[key]] = item;
+        return obj;
+    }, {});
 };
 
 Utils.randomString = function (len = 8) {
@@ -186,9 +216,15 @@ Utils.capitalize = function (str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+Utils.generateID = (len = 4, num = Number.MAX_SAFE_INTEGER) => {
+    return Array.from(new Array(len))
+        .map(() => Math.floor(Math.random() * num).toString(16))
+        .join("-");
+};
+
 Utils.measureText = (text, font) => {
-    const canvas = Utils.measureText.canvas || (Utils.measureText.canvas = document.createElement("canvas"));
-    const ctx = canvas.getContext("2d");
+    const canvas = Utils.measureText.canvas || (Utils.measureText.canvas = document.createElement('canvas'));
+    const ctx = canvas.getContext('2d');
     ctx.font = font || 'bold 10pt system-ui';
     return ctx.measureText(text).width;
 };
@@ -197,18 +233,18 @@ Utils.fixName = (d, dName) => {
     let i = 1;
     const base = dName;
     while (d[dName]) {
-        dName = `${base} (${i})`
+        dName = `${base} (${i})`;
         i++;
     }
     return dName;
 };
 
-Utils.isEmptyString = (str) => {
-    return (!str || str.length === 0);
+Utils.isEmptyString = str => {
+    return !str || str.length === 0;
 };
 
-Utils.isBlankString = (str) => {
-    return (!str || /^\s*$/.test(str));
+Utils.isBlankString = str => {
+    return !str || /^\s*$/.test(str);
 };
 
 Utils.log = function () {};
@@ -226,9 +262,7 @@ Utils.getUrlParameter = function (name) {
     const nameA = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     const regex = new RegExp('[\\?&]' + nameA + '=([^&#]*)');
     const results = regex.exec(location.search.replace(/\/$/, ''));
-    return results === null
-        ? null
-        : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 Utils.debounce = function (func, wait = 100) {
@@ -238,6 +272,25 @@ Utils.debounce = function (func, wait = 100) {
         timeout = setTimeout(() => {
             func.apply(this, args);
         }, wait);
+    };
+};
+
+Utils.throttle = function(fn, threshold = 250, context) {
+    let last, timer;
+    return function() {
+        var ctx = context || this;
+        var now = new Date().getTime(),
+            args = arguments;
+        if (last && now < last + threshold) {
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                last = now;
+                fn.apply(ctx, args);
+            }, threshold);
+        } else {
+            last = now;
+            fn.apply(ctx, args);
+        }
     };
 };
 
@@ -302,7 +355,7 @@ Utils.nscolorToRgb = function (rP, gP, bP) {
         r : Math.round(rP * 255),
         g : Math.round(gP * 255),
         b : Math.round(bP * 255)
-    }
+    };
 };
 
 Utils.nsColorToHex = function (rP, gP, bP) {
@@ -347,6 +400,21 @@ Utils.readJson = function (file, callback) {
     req.send(null);
 };
 
+Utils.readFile = function(url) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            //resolve(new Response(xhr.responseText, {status: xhr.status}))
+            resolve(xhr.responseText);
+        };
+        xhr.onerror = function() {
+            reject(new TypeError('Local request failed'));
+        };
+        xhr.open('GET', url);
+        xhr.send(null);
+    });
+};
+
 Utils.loadScript = function (url, callback) {
     const el = document.createElement('script');
     el.src = url;
@@ -385,17 +453,21 @@ Utils.parseJSONPromise = function (jsonString) {
 
     return new Promise((resolve, reject) => {
         try {
-            resolve(JSON.parse(jsonString));
+            const o = JSON.parse(jsonString);
+            if(o && typeof o === 'object') {
+                resolve(o);
+            } else {
+                resolve({});
+            }
         } catch (e) {
             reject(e);
         }
     });
 };
 
-/* eslint-disable import/prefer-default-export */
+
 Utils.getProperty = function (obj, dotSeparatedKeys, defaultValue) {
-    if (arguments.length > 1 && typeof dotSeparatedKeys !== 'string')
-        return undefined;
+    if (arguments.length > 1 && typeof dotSeparatedKeys !== 'string') return undefined;
     if (typeof obj !== 'undefined' && typeof dotSeparatedKeys === 'string') {
         const pathArr = dotSeparatedKeys.split('.');
         pathArr.forEach((key, idx, arr) => {
@@ -417,18 +489,14 @@ Utils.getProperty = function (obj, dotSeparatedKeys, defaultValue) {
             }
         });
         // eslint-disable-next-line no-param-reassign, no-confusing-arrow
-        obj = pathArr.reduce(
-            (o, key) => (o && o[key] !== 'undefined' ? o[key] : undefined),
-            obj
-        );
+        obj = pathArr.reduce((o, key) => (o && o[key] !== 'undefined' ? o[key] : undefined), obj);
     }
     return obj === undefined ? defaultValue : obj;
 };
 
 Utils.getProp = (jsn, str, defaultValue = {}, sep = '.') => {
     const arr = str.split(sep);
-    return arr.reduce((obj, key) =>
-        (obj && obj.hasOwnProperty(key)) ? obj[key] : defaultValue, jsn);
+    return arr.reduce((obj, key) => (obj && obj.hasOwnProperty(key) ? obj[key] : defaultValue), jsn);
 };
 
 Utils.setProp = function (jsonObj, path, value) {
@@ -492,6 +560,49 @@ Utils.injectStyle = function (styles, styleId) {
    return node;
 };
 
+Utils.loadImageData = function(inUrl, callback) {
+    let image = new Image();
+    image.onload = function() {
+        callback(image);
+        // or to get raw image data
+        // callback && callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+    };
+    image.src = inUrl;
+};
+
+Utils.loadImagePromise = url =>
+    new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve({url, status: 'ok'});
+        img.onerror = () => resolve({url, status: 'error'});
+        img.src = url;
+    });
+
+Utils.loadImages = arrayOfUrls => Promise.all(arrayOfUrls.map(Utils.loadImagePromise));
+
+Utils.loadImageWithOptions = (url, w, h, inCanvas, clearCtx, inFillcolor) =>
+    new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = inCanvas && Utils.isCanvas(inCanvas) ? inCanvas : document.createElement('canvas');
+            canvas.width = w || img.naturalWidth; // or 'width' if you want a special/scaled size
+            canvas.height = h || img.naturalHeight; // or 'height' if you want a special/scaled size
+            console.log('IMG', img, img.naturalWidth);
+            const ctx = canvas.getContext('2d');
+            if(clearCtx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            if(inFillcolor) {
+                ctx.fillStyle = inFillcolor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            window.bbb = canvas.toDataURL('image/png');
+            resolve({url, status: 'ok', image: canvas.toDataURL('image/png')}); // raw image with: canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+        };
+        img.onerror = () => resolve({url, status: 'error'});
+        img.src = url;
+    });
 
 Utils.loadImage = function (inUrl, callback, inCanvas, inFillcolor) {
     /** Convert to array, so we may load multiple images at once */
@@ -597,19 +708,28 @@ Utils.onChange = function (object, callback) {
     const handler = {
         get (target, property, receiver) {
             try {
-                console.log('get via Proxy: ', property, target, receiver);
                 return new Proxy(target[property], handler);
             } catch (err) {
-                console.log('get via Reflect: ', err, property, target, receiver);
                 return Reflect.get(target, property, receiver);
             }
         },
         set (target, property, value, receiver) {
-            console.log('Utils.onChange:set1:', target, property, value, receiver);
-            // target[property] = value;
-            const b = Reflect.set(target, property, value);
-            console.log('Utils.onChange:set2:', target, property, value, receiver);
-            return b;
+            try {
+                if(callback && !callback(target, property, value)) {
+                    throw new Error(`${value} is not a valid ${property}`);
+                };
+
+                const oldValue = Reflect.get(target, property, value, receiver);
+                const success = Reflect.set(target, property, value);
+
+                if(oldValue !== value && typeof changedCallback === 'function') {
+                    changedCallback(target, property, value, oldValue);
+                }
+                return success;
+            } catch(err) {
+                console.warn(`proxy:property was not SAVED: ${err}`);
+                return Reflect.get(target, property, receiver) || {};
+            }
         },
         defineProperty (target, property, descriptor) {
             console.log('Utils.onChange:defineProperty:', target, property, descriptor);
@@ -654,6 +774,8 @@ Utils.observeArray = function (object, callback) {
 
     return new Proxy(object, handler);
 };
+
+Utils.noop = function() {};
 
 window['_'] = Utils;
 
@@ -751,7 +873,7 @@ const StreamDeck = (function () {
                 loadLocalization(lang, inMessageType === 'registerPropertyInspector' ? '../' : './', function() {
                     events.emit('localizationLoaded', {language:lang});
                 });
-            };
+            }
 
             /** restrict the API to what's possible
              * within Plugin or Property Inspector
@@ -762,7 +884,7 @@ const StreamDeck = (function () {
             if (websocket) {
                 websocket.close();
                 websocket = null;
-            };
+            }
 
             websocket = new WebSocket('ws://127.0.0.1:' + inPort);
 
@@ -798,10 +920,7 @@ const StreamDeck = (function () {
             websocket.onclose = function (evt) {
                 // Websocket is closed
                 var reason = WEBSOCKETERROR(evt);
-                console.warn(
-                    '[STREAMDECK]***** WEBOCKET CLOSED **** reason:',
-                    reason
-                );
+                console.warn('[STREAMDECK]***** WEBOCKET CLOSED **** reason:', reason);
             };
 
             websocket.onmessage = function (evt) {
@@ -880,11 +999,9 @@ const ELGEvents = {
             return eventList.get(name).sub(fn);
         };
 
-        const has = (name) =>
-            eventList.has(name);
+        const has = name => eventList.has(name);
 
-        const emit = (name, data) =>
-            eventList.has(name) && eventList.get(name).pub(data);
+        const emit = (name, data) => eventList.has(name) && eventList.get(name).pub(data);
 
         return Object.freeze({ on, has, emit, eventList });
     },
@@ -986,7 +1103,7 @@ const SDApi = {
         setState: function (context, payload) {
             SDApi.send(context, 'setState', {
                 payload: {
-                    'state': 1 - Number(payload === 0)
+                    state: 1 - Number(payload === 0)
                 }
             });
         },
@@ -995,6 +1112,14 @@ const SDApi = {
             SDApi.send(context, 'setTitle', {
                 payload: {
                     title: '' + title || '',
+                    target: target || DestinationEnum.HARDWARE_AND_SOFTWARE
+                }
+            });
+        },
+
+        clearTitle: function(context, title, target) {
+            SDApi.send(context, 'setTitle', {
+                payload: {
                     target: target || DestinationEnum.HARDWARE_AND_SOFTWARE
                 }
             });
@@ -1047,7 +1172,8 @@ const SDApi = {
     common: {
 
         getSettings: function (context, payload) {
-            SDApi.send(context, 'getSettings', {});
+            const uuid = context ? context : $SD.uuid;
+            SDApi.send(uuid, 'getSettings', {});
         },
 
         setSettings: function (context, payload) {
@@ -1056,14 +1182,31 @@ const SDApi = {
             });
         },
 
-        getGlobalSettings: function (context, payload) {
-            SDApi.send(context, 'getGlobalSettings', {});
+        getGlobalSettings: function(context) {
+            const uuid = context ? context : $SD.uuid;
+            SDApi.send(uuid, 'getGlobalSettings', {});
         },
 
         setGlobalSettings: function (context, payload) {
-            SDApi.send(context, 'setGlobalSettings', {
+            const uuid = context ? context : $SD.uuid;
+            SDApi.send(uuid, 'setGlobalSettings', {
                 payload: payload
             });
+        },
+
+        switchToProfile: function(inContext, inDeviceID, inProfileName = null) {
+            if(inDeviceID && inDeviceID.length !== 0) {
+                const context = inContext ? inContext : $SD.uuid;
+                const device = inDeviceID;
+                const event = 'switchToProfile';
+                if(inProfileName && inProfileName.length !== 0) {
+                    const payload = {
+                        profile: inProfileName
+                    };
+                    const pl = Object.assign({}, {event, context, device}, payload);
+                    $SD.connection && $SD.connection.sendJSON(pl);
+                }
+            }
         },
 
         logMessage: function () {
@@ -1074,7 +1217,7 @@ const SDApi = {
             * logMessage('message')
             */
 
-            let payload = (arguments.length > 1) ? arguments[1] : arguments[0];
+            let payload = arguments.length > 1 ? arguments[1] : arguments[0];
 
             SDApi.send(null, 'logMessage', {
                 payload: {
@@ -1139,8 +1282,7 @@ const SDDebug = {
             debugLog('---');
         };
 
-        const logSomething = jsn =>
-            console.log('____SDDebug.logger.logSomething');
+        const logSomething = jsn => console.log('____SDDebug.logger.logSomething');
 
         return { logEvent, logSomething };
     }
@@ -1166,7 +1308,7 @@ function WEBSOCKETERROR (evt) {
     } else if (evt.code === 1002) {
         reason = 'Protocol error. An endpoint is terminating the connection due to a protocol error';
     } else if (evt.code === 1003) {
-        reason = "Unsupported Data. An endpoint received a type of data it doesn't support.";
+        reason = 'Unsupported Data. An endpoint received a type of data it doesn\'t support.';
     } else if (evt.code === 1004) {
         reason = '--Reserved--. The specific meaning might be defined in the future.';
     } else if (evt.code === 1005) {
@@ -1179,12 +1321,15 @@ function WEBSOCKETERROR (evt) {
         reason = 'Policy Violation. The connection was closed, because current message data "violates its policy". This reason is given either if there is no other suitable reason, or if there is a need to hide specific details about the policy.';
     } else if (evt.code === 1009) {
         reason = 'Message Too Big. Connection closed because the message is too big for it to process.';
-    } else if (evt.code === 1010) { // Note that this status code is not used by the server, because it can fail the WebSocket handshake instead.
-        reason = "Mandatory Ext. Connection is terminated the connection because the server didn't negotiate one or more extensions in the WebSocket handshake. <br /> Mandatory extensions were: " + evt.reason;
+    } else if(evt.code === 1010) {
+        // Note that this status code is not used by the server, because it can fail the WebSocket handshake instead.
+        reason =
+            'Mandatory Ext. Connection is terminated the connection because the server didn\'t negotiate one or more extensions in the WebSocket handshake. <br /> Mandatory extensions were: ' +
+            evt.reason;
     } else if (evt.code === 1011) {
-        reason = 'Internl Server Error. Connection closed because it encountered an unexpected condition that prevented it from fulfilling the request.';
+        reason = 'Internal Server Error. Connection closed because it encountered an unexpected condition that prevented it from fulfilling the request.';
     } else if (evt.code === 1015) {
-        reason = "TLS Handshake. The connection was closed due to a failure to perform a TLS handshake (e.g., the server certificate can't be verified).";
+        reason = 'TLS Handshake. The connection was closed due to a failure to perform a TLS handshake (e.g., the server certificate can\'t be verified).';
     } else {
         reason = 'Unknown reason';
     }
