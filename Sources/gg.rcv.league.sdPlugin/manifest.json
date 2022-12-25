@@ -42,7 +42,7 @@
   "Description": "Plugin to control the League Observer Tool over the stream deck", 
   "Name": "League Observer Tool", 
   "Icon": "action/images/action", 
-  "URL": "https://www.elgato.com/en/gaming/stream-deck", 
+  "URL": "https://github.com/RCVolus/league-observer-tool-sdPlugin", 
   "Version": "1.0.0",
   "OS": [
     {
