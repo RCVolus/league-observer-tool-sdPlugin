@@ -1,0 +1,61 @@
+{
+  "Actions": [
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Set up UI for Observing", 
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "Tooltip": "Set up UI for Observing", 
+      "UUID": "gg.rcv.league.ui.obs"
+    },
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Set up UI for Cinematic", 
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "Tooltip": "Set up UI for Cinematic", 
+      "UUID": "gg.rcv.league.ui.cinematic"
+    },
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Sync to first Operator", 
+      "PropertyInspectorPath": "propertyinspector/eplay_sync.html",
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "Tooltip": "Sync to first Operator", 
+      "UUID": "gg.rcv.league.replay.sync"
+    }
+  ], 
+  "SDKVersion": 2,
+  "Author": "RCVolus", 
+  "CodePath": "index.html", 
+  "PropertyInspectorPath": "propertyinspector/index.html", 
+  "Description": "Plugin to control the League Observer Tool over the stream deck", 
+  "Name": "League Observer Tool", 
+  "Icon": "action/images/action", 
+  "URL": "https://www.elgato.com/en/gaming/stream-deck", 
+  "Version": "1.0.0",
+  "OS": [
+    {
+        "Platform": "mac", 
+        "MinimumVersion" : "10.11"
+    },
+    {
+        "Platform": "windows", 
+        "MinimumVersion" : "10"
+    }
+  ],
+  "Software": 
+    {
+        "MinimumVersion" : "4.1"
+  }
+}

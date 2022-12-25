@@ -1,0 +1,23 @@
+{
+  "Description": "Plugin to control the League Observer Tool over the stream deck", 
+  "Name": "League Observer Tool", 
+  "Category": "Games", 
+  "gg.rcv.league.ui.obs": {
+    "Name": "Set up UI for Observing", 
+    "Tooltip": "Set up UI for Observing"
+  },
+  "gg.rcv.league.ui.cinematic": {
+    "Name": "Set up UI for Cinematic", 
+    "Tooltip": "Set up UI for Cinematic"
+  },
+  "gg.rcv.league.replay.sync": {
+    "Name": "Sync to first Operator", 
+    "Tooltip": "Sync to first Operator"
+  },
+  "Localization": {
+    "More info": "More info",
+    "Message": "Message",
+    "Click Me": "Click Me",
+    "Button": "Button"
+  }
+}
