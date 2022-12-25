@@ -37,13 +37,15 @@
   ], 
   "SDKVersion": 2,
   "Author": "RCVolus", 
+  "Category": "League Observer Tool",
   "CodePath": "index.html", 
   "PropertyInspectorPath": "propertyinspector/index.html", 
   "Description": "Plugin to control the League Observer Tool over the stream deck", 
   "Name": "League Observer Tool", 
-  "Icon": "action/images/action", 
+  "Icon": "action/images/action",
+  "CategoryIcon": "action/images/actionimage",
   "URL": "https://github.com/RCVolus/league-observer-tool-sdPlugin", 
-  "Version": "1.0.0",
+  "Version": "1.1.1",
   "OS": [
     {
         "Platform": "mac", 
