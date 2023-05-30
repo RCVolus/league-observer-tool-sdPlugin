@@ -14,6 +14,10 @@
     "Name": "Sync to first Operator", 
     "Tooltip": "Sync to first Operator"
   },
+  "gg.rcv.league.replay.time": {
+    "Name": "Jump to in game time", 
+    "Tooltip": "Jump to in game time"
+  },
   "Localization": {
     "More info": "More info",
     "Message": "Message",

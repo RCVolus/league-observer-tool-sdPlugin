@@ -4,13 +4,13 @@ function connected(jsn) {
     $SD.on('gg.rcv.league.ui.obs.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
     $SD.on('gg.rcv.league.ui.cinematic.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
     $SD.on('gg.rcv.league.replay.sync.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
+    $SD.on('gg.rcv.league.replay.time.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
 };
 
 // ACTIONS
 
 const action = {
   onKeyUp: async function (jsn) {
-    console.log(jsn)
     try {
       jsn.action = jsn.action.replace('gg.rcv.league.', '')
       jsn.action = jsn.action.replace('.', '_')

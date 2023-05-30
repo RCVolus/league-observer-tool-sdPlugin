@@ -25,7 +25,7 @@
     {
       "Icon": "action/images/actionimage", 
       "Name": "Sync to first Operator", 
-      "PropertyInspectorPath": "propertyinspector/eplay_sync.html",
+      "PropertyInspectorPath": "propertyinspector/replay_sync.html",
       "States": [
         {
           "Image": "action/images/action"
@@ -33,6 +33,18 @@
       ], 
       "Tooltip": "Sync to first Operator", 
       "UUID": "gg.rcv.league.replay.sync"
+    },
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Jump to in game time", 
+      "PropertyInspectorPath": "propertyinspector/replay_time.html",
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "Tooltip": "Jump to in game time", 
+      "UUID": "gg.rcv.league.replay.time"
     }
   ], 
   "SDKVersion": 2,
@@ -45,7 +57,7 @@
   "Icon": "action/images/action",
   "CategoryIcon": "action/images/actionimage",
   "URL": "https://github.com/RCVolus/league-observer-tool-sdPlugin", 
-  "Version": "1.1.1",
+  "Version": "1.2.0",
   "OS": [
     {
         "Platform": "mac", 
